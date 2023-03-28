@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 16px;
+    width: 300px;
+    color: #444;
+  }
+  
+  h1{
+    margin-bottom: 16px;
+    margin-top: 16px;
+    font-weight: normal;
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  h2 {
+    margin-bottom: 6px;
+    margin-top: 6px;
+    font-weight: normal;
+    font-size: 18px;
+  }
+
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #2a6496;
+    cursor: pointer;
+  }
+  
+  button {
+    background-color: #2a6496;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  button:hover {
+    background-color: #1d4c80;
+  }
+  
+  .toast {
+    visibility: hidden;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+    z-index: 999;
+  }
+  
+  .toast.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .chat-item {
+    position: relative;
+  }
+  
+  .unpin-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none;
+  }
+  
+  .chat-item:hover .unpin-button {
+    display: inline;
+  }
+  
+  .icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .icons a {
+    margin: 0 10px;
+  }
+  
+  .icons img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .icons img:hover {
+    transform: scale(1.1);
+  }
+  
