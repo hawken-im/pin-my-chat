@@ -1,11 +1,14 @@
 .pinned-chats-list {
-  list-style-type: none;
+  display: block;
+  list-style: none;
   padding: 0;
   margin: 0;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
+}
+
+.pinned-chats-list.collapsed {
+  display: none;
 }
 
 .chat-item {
@@ -68,6 +71,17 @@
   display: none;
 }
 
+.toggle-button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  color: #007bff;
+}
+
 .chat-item:hover .unpin-button {
   display: inline;
 }
@@ -91,6 +105,17 @@
   opacity: 1;
 }
 
+#no-chat-message-container{
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #006203;
+  padding: 5px 10px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+}
+
 #current-chat {
   position: relative;
   display: flex;
@@ -107,6 +132,12 @@
   flex-grow: 1;
 }
 
+#no-chat-message {
+  color: #c9c9c9;
+  font-size: 12px;
+  flex-grow: 1;
+}
+
 #current-chat .pin-button {
   position: absolute;
   right: 8px;
@@ -118,3 +149,32 @@
   background-color: #2563eb;
 }
 
+.pinned-chats-list.collapsed {
+  max-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#toggle-button {
+  display: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  padding: 5px 10px;
+}
+
+#toggle-button:hover {
+  background-color: #f0f0f0;
+}
+
+#toggle-button:active {
+  background-color: #e0e0e0;
+  border-color: #aaa;
+  color: #111;
+}

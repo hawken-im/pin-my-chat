@@ -100,7 +100,8 @@ function pinChat() {
 
 function injectCurrentChat(parent) {
   const currentChatCreated = document.querySelector('#current-chat');
-  if (currentChatCreated) {
+  const noChatMessageCreated = document.querySelector('#no-chat-message-container');
+  if (currentChatCreated || noChatMessageCreated) {
     return;
   }
 
@@ -110,31 +111,48 @@ function injectCurrentChat(parent) {
     currentChatTitle = buttons.parentNode.querySelector('div.flex-1.text-ellipsis').textContent;
     currentChatURL = window.location.href;
   } else {
-    return;
+    currentChatURL = window.location.href;
   }
   
-  const currentChat = document.createElement('div');
-  currentChat.id = 'current-chat';
+  chrome.storage.sync.get('pinnedChats', (data) => {
+    const pinnedChats = data.pinnedChats || [];
 
-  if (/^https:\/\/chat\.openai\.com\/chat\/[^/]+$/i.test(currentChatURL)) {
-    const title = document.createElement('div');
-    title.textContent = currentChatTitle;
-    title.id = 'current-chat-title'
+    // Check if the current chat is already in the pinned chat list
+    const isCurrentChatPinned = pinnedChats.some(chat => chat.url === currentChatURL);
+    if (!isCurrentChatPinned){
+      const currentChat = document.createElement('div');
+      currentChat.id = 'current-chat';
+      const title = document.createElement('div');
+      title.id = 'current-chat-title';
+      title.textContent = currentChatTitle;
+      currentChat.appendChild(title);
 
-    const pinIcon = document.createElement('button');
-    pinIcon.className = 'pin-button';
-    pinIcon.id = 'pin-button-created';
-    pinIcon.textContent = 'Pin';
-    pinIcon.addEventListener('click', pinChat);
+      if (/^https:\/\/chat\.openai\.com\/chat\/[a-z0-9\-]+$/i.test(currentChatURL)) {
+        const pinIcon = document.createElement('button');
+        pinIcon.className = 'pin-button';
+        pinIcon.id = 'pin-button-created';
+        pinIcon.textContent = 'Pin';
+        pinIcon.addEventListener('click', pinChat);
+        currentChat.appendChild(pinIcon);
+      } else {
+        const noChatMessageContainer = document.createElement('div');
+        noChatMessageContainer.id = 'no-chat-message-container';
+        const noChatMessage = document.createElement('div');
+        noChatMessage.id = 'no-chat-message';
+        noChatMessage.textContent = "A new chat detected, refresh the page to pin it.";
+        noChatMessageContainer.appendChild(noChatMessage);
+        parent.appendChild(noChatMessageContainer);
+        return;
+      }
 
-    currentChat.appendChild(pinIcon);
-    currentChat.appendChild(title);
-    parent.appendChild(currentChat);
-    scrollToTop(buttons.parentNode,chatHistoryContainer)
-  } else {
-    console.log('Not a valid chat.openai.com URL');
-  }
+      parent.appendChild(currentChat);
+      if (buttons){
+        scrollToTop(buttons.parentNode,chatHistoryContainer);
+      }
+    }
+  });
 }
+
 
 function injectPinnedChats() {
   const listCreated = document.querySelector('#pinned-chats-container');
@@ -157,6 +175,25 @@ function injectPinnedChats() {
     chatHistory.parentNode.insertBefore(pinnedChatsList, chatHistory);
     chatHistoryContainer = chatHistory;
     console.log('Pinned chats container injected.');
+
+    // Add expand/collapse button
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Collapse Pinned Chats';
+    toggleButton.classList.add('toggle-button');
+    pinnedChatsList.parentNode.insertBefore(toggleButton, pinnedChatsList);
+
+    toggleButton.addEventListener('click', () => {
+      if (pinnedChatsList.classList.contains('collapsed')) {
+        pinnedChatsList.classList.remove('collapsed');
+        pinnedChatsList.classList.add('expanded');
+        toggleButton.textContent = 'Collapse Pinned Chats';
+      } else {
+        pinnedChatsList.classList.remove('expanded');
+        pinnedChatsList.classList.add('collapsed');
+        toggleButton.textContent = 'Expand Pinned Chats';
+      }
+    });
+    
   }
 
   chrome.storage.sync.get('pinnedChats', (data) => {
