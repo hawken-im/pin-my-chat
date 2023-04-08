@@ -178,3 +178,17 @@
   border-color: #aaa;
   color: #111;
 }
+
+.locked {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+}
+
+.locked:hover {
+  background: rgba(0, 0, 0, 1);
+}
+
+.locked.clicked {
+  color: red;
+}

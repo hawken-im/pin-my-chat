@@ -4,6 +4,65 @@ let currentChatURL;
 let currentChatTitle;
 let parentNode;
 let chatHistoryContainer;
+//let injected = false; // Add a flag to track the injection status
+
+function addUnlockButton() {
+  const existingUnlockButton = document.getElementById("unlockButton");
+
+  if (existingUnlockButton) {
+    console.log("unlock button already added");
+    return;
+  }
+  const nav = document.querySelector("nav");
+  let clearConversationBtn = null;
+
+  if (nav) {
+    const links = nav.querySelectorAll("a");
+
+    links.forEach((link) => {
+      if (link.textContent.trim() === "Clear conversations") {
+        clearConversationBtn = link;
+      }
+    });
+
+    if (clearConversationBtn) {
+      const unlockButton = document.createElement("button");
+      unlockButton.id = "unlockButton";
+      unlockButton.className = "locked";
+      unlockButton.textContent = "Unlock";
+      unlockButton.style.position = "absolute";
+      unlockButton.style.top = clearConversationBtn.getBoundingClientRect().top - 6 + "px";
+      unlockButton.style.left = clearConversationBtn.getBoundingClientRect().left - 6 + "px";
+      unlockButton.style.width = clearConversationBtn.getBoundingClientRect().width + 12 + "px";
+      unlockButton.style.height = clearConversationBtn.getBoundingClientRect().height + 6 + "px";
+      unlockButton.style.zIndex = "9999";
+      clearConversationBtn.parentNode.insertBefore(unlockButton, clearConversationBtn);
+
+      unlockButton.addEventListener("click", () => {
+        let countdown = 2;
+        unlockButton.classList.add("clicked");
+        unlockButton.textContent = "Unlock in 3";
+        const unlockCountdownInterval = setInterval(() => {
+          unlockButton.textContent = `Unlock in ${countdown}`;
+          countdown--;
+
+          if (countdown < 0) {
+            clearInterval(unlockCountdownInterval);
+            unlockButton.textContent = `Unlock`;
+            unlockButton.classList.remove("clicked");
+            unlockButton.style.display = "none";
+            showToast('"Clear conversations" will be locked in 5 secs');
+          }
+        }, 1000);
+
+        setTimeout(() => {
+          showToast(`"Clear conversations" locked by PinMyChat`);
+          unlockButton.style.display = "block";
+        }, 8000);
+      });
+    }
+  }
+}
 
 function scrollToTop(element, parent) {
   if (element && parent) {
@@ -212,13 +271,18 @@ function injectPinnedChats() {
 function observeChange() {
   const body = document.querySelector('body');
   const observer = new MutationObserver((mutations) => {
+    // if (injected) {
+    //   observer.disconnect(); // Disconnect the observer if the required elements have been injected
+    //   return;
+    // }
     for (let mutation of mutations) {
       const target = mutation.target;
       if (target.tagName === 'NAV' || target.tagName === 'MAIN') {
         setTimeout(() => {
+          // Add the "unlock" button when the page loads
+          addUnlockButton();
           injectPinnedChats();
           injectCurrentChat(parentNode);
-          //injectPinButton();
         }, 500);
         break;
       }
@@ -230,10 +294,10 @@ function observeChange() {
 
 
 window.addEventListener('load', () => {
+  //injected = false;
+  // Add the "unlock" button when the page loads
+  addUnlockButton();
   injectPinnedChats();
   injectCurrentChat(parentNode);
-  //injectPinButton();
   observeChange();
 });
-
-
