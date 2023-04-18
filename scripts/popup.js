@@ -90,7 +90,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const linksList = document.getElementById('links');
   const li = document.createElement('li');
 
-  if (/^https:\/\/chat\.openai\.com\/chat\/[^/]+$/i.test(currentChatURL)) {
+  if (/^https:\/\/chat\.openai\.com\/c\/[^/]+$/i.test(currentChatURL)) {
     const a = document.createElement('a');
     a.textContent = currentChatTitle;
     a.href = currentChatURL;

@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "PinMyChat",
-  "version": "1.6",
+  "version": "1.6.3",
   "description": "Pin your chat history from ChatGPT to a list for easy access.",
+  "author": "Hawken",
+  "homepage_url": "https://hawken.im",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "icons": {
@@ -23,7 +24,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://chat.openai.com/chat/*"],
+      "matches": ["<all_urls>"],
       "css": ["content.css"],
       "js": ["scripts/content.js"]
     }

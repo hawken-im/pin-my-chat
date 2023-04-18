@@ -6,6 +6,12 @@ let parentNode;
 let chatHistoryContainer;
 //let injected = false; // Add a flag to track the injection status
 
+function init(){
+  addUnlockButton();
+  injectPinnedChats();
+  injectCurrentChat(parentNode);
+}
+
 function addUnlockButton() {
   const existingUnlockButton = document.getElementById("unlockButton");
 
@@ -186,7 +192,7 @@ function injectCurrentChat(parent) {
       title.textContent = currentChatTitle;
       currentChat.appendChild(title);
 
-      if (/^https:\/\/chat\.openai\.com\/chat\/[a-z0-9\-]+$/i.test(currentChatURL)) {
+      if (/^https:\/\/chat\.openai\.com\/c\/[^/]+$/i.test(currentChatURL)) {
         const pinIcon = document.createElement('button');
         pinIcon.className = 'pin-button';
         pinIcon.id = 'pin-button-created';
@@ -268,36 +274,11 @@ function injectPinnedChats() {
   });
 }
 
-function observeChange() {
-  const body = document.querySelector('body');
-  const observer = new MutationObserver((mutations) => {
-    // if (injected) {
-    //   observer.disconnect(); // Disconnect the observer if the required elements have been injected
-    //   return;
-    // }
-    for (let mutation of mutations) {
-      const target = mutation.target;
-      if (target.tagName === 'NAV' || target.tagName === 'MAIN') {
-        setTimeout(() => {
-          // Add the "unlock" button when the page loads
-          addUnlockButton();
-          injectPinnedChats();
-          injectCurrentChat(parentNode);
-        }, 500);
-        break;
-      }
-    }
-  });
-
-  observer.observe(body, { childList: true, subtree: true });
-}
-
 
 window.addEventListener('load', () => {
   //injected = false;
   // Add the "unlock" button when the page loads
-  addUnlockButton();
-  injectPinnedChats();
-  injectCurrentChat(parentNode);
-  observeChange();
+  init();
+  //observeChange();
+  setInterval(init, 1001);
 });
